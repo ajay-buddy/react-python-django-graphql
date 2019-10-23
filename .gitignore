@@ -1,0 +1,7 @@
+node_modules
+data
+.env
+dist
+bss-jwt.txt
+email-list.txt
+yarn-error.log
