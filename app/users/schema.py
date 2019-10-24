@@ -9,9 +9,15 @@ class UserType(DjangoObjectType):
 
 class Query(graphene.ObjectType):
     user = graphene.Field(UserType, email=graphene.String(required=True))
+    me = graphene.Field(UserType)
 
     def resolve_user(self, info, email):
         return get_user_model().objects.get(email=email)
+    
+    def resolve_me(self, info):
+        user = info.context.user
+        if user.is_anonymous:
+            raise Exception('Not Logged in!!')
 
 class CreateUser(graphene.Mutation):
     user = graphene.Field(UserType)
