@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'tracks',
     'books',
     'games',
+    'like'
 ]
 
 GRAPHENE = {

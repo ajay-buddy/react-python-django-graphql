@@ -22,9 +22,48 @@ class CreateGame(graphene.Mutation):
         url = graphene.String()
 
     def mutate(self, info, **kwargs):
-        game = Game(title = kwargs.get('title'), description = kwargs.get('description'), url = kwargs.get('url'))
+        user = info.context.user or None
+        game = Game(title = kwargs.get('title'), description = kwargs.get('description'), url = kwargs.get('url'), posted_by = user)
         game.save()
         return CreateGame(game=game)
 
+class UpdateGame(graphene.Mutation):
+    game = graphene.Field(GameType)
+
+    class Arguments:
+        game_id = graphene.Int(required=True)
+        title = graphene.String()
+        description = graphene.String()
+        url = graphene.String()
+    
+    def mutate(self, info, **kwargs):
+        user = info.context.user or None
+        game = Game.objects.get(id=kwargs.get('game_id'))
+
+        if game.posted_by != user:
+            raise Exception('Not Permitted!!')
+        game.title = kwargs.get('title')
+        game.description = kwargs.get('description')
+        game.url = kwargs.get('url')
+        game.save()
+        return UpdateGame(game=game)
+
+class DeleteGame(graphene.Mutation):
+    game = graphene.Field(GameType)
+
+    class Arguments:
+        game_id = graphene.Int(required=True)
+    
+    def mutate(self, info, **kwargs):
+        user = info.context.user or None
+        game = Game.objects.get(id=kwargs.get('game_id'))
+
+        if game.posted_by != user:
+            raise Exception('Not Permitted!!')
+        game.delete()
+        return DeleteGame(game=game)
+
 class Mutation(graphene.ObjectType):
     create_game = CreateGame.Field()
+    update_game = UpdateGame.Field()
+    delete_game = DeleteGame.Field()

@@ -11,6 +11,7 @@ django = "*"
 graphene-django = "*"
 django-graphql-jwt = "*"
 django-cors-header = "*"
+django-enumfield = "*"
 
 [requires]
 python_version = "3.7"
