@@ -18,7 +18,7 @@ class Query(graphene.ObjectType):
         user = info.context.user
         if user.is_anonymous:
             raise Exception('Not Logged in!!')
-        return user.username
+        return user
 
 class CreateUser(graphene.Mutation):
     user = graphene.Field(UserType)
